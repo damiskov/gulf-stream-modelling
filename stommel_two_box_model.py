@@ -42,20 +42,23 @@ def simulate_differential_equation(nn, R, delta, lambda_val, q, qdelta, resosc, 
 def plot_functions(nn, R, lambda_val, dtau, nstep, x, y, d):
     if nn == 0:
         nn = 1
-        plot_initial_case(R, lambda_val, dtau, nstep, x, y, d)
+        # Make a time series plot for the first case only
+        #experiment_1(dtau, nstep, x, y, d) #outcomment this if you want to see the time series plot
+        plot_initial_case(R, lambda_val)
     m2 = len(x)
     if d[m2 - 1] >= 0:
         plt.plot(x, y, 'r--')
         plt.plot(x[m2 - 1], y[m2 - 1], '*r')
+        plt.text(x[m2 - 1], y[m2 - 1], "c")
     else:
         plt.plot(x, y, 'g')
         plt.plot(x[m2 - 1], y[m2 - 1], '*g')
+        plt.text(x[m2 - 1], y[m2 - 1], "a")
+    plt.plot(0.347, 0.777, '*k')
+    plt.text(0.347, 0.777, "b")
     return nn
 
-def plot_initial_case(R, lambda_val, dtau, nstep, x, y, d):
-    # Make a time series plot for the first case only
-    #experiment_1(dtau, nstep, x, y, d) #outcomment this if you want to see the time series plot
-
+def plot_initial_case(R, lambda_val):
     plt.figure(2, figsize=(8,6))
 
     plt.clf()
@@ -78,6 +81,7 @@ def plot_initial_case(R, lambda_val, dtau, nstep, x, y, d):
     plt.title("Phase portrait for Stommels Two Box Model")
     plt.ylim(0,1)
     plt.xlim(0,1)
+
     plt.grid(True)
 
 def experiment_1(dtau, nstep, x, y, d):
@@ -126,23 +130,85 @@ def update_variables(R, delta, lambda_val, q, qdelta, dtau, x, y, m, yres, qequi
     return qequil,yh,xh,qh
 
 def calculate_and_plot_values(R, delta, lambda_val):
-    f = np.zeros(60)
-    lhs = np.zeros(60)
-    rhs = np.zeros(60)
+    t = 2000
+    f = np.zeros(t)
+    lhs = np.zeros(t)
+    rhs = np.zeros(t)
+
+    lhs1 = np.zeros(t)
+    lhs2 = np.zeros(t)
 
 # Calculate values for f, lhs, and rhs
-    for k in range(1, 61):
+    for k in range(1, t+1):
         f[k - 1] = (k - 30) * 0.1
         lhs[k - 1] = lambda_val * f[k - 1]
         rhs[k - 1] = (R / (1 + abs(f[k - 1]) / delta)) - 1 / (1 + abs(f[k - 1]))
+        ## add new lines here for new lambda values
+        lhs1[k-1] = 1 * f[k - 1]
+        lhs2[k-1] = 2/5 * f[k - 1]
 
+    ins_plot1 = (-1.061,-0.22)
+    ins_plot2 = (-0.3, -0.07)
+    ins_plot3 = (0.23, 0.032)
+
+    intersection_points = [ins_plot1, ins_plot2, ins_plot3]
 # Create a plot
     plt.figure(3, figsize=(8,6))
     plt.clf()
-    plt.plot(f, rhs, f, lhs)
-    plt.xlabel('f, flow rate')
+    plt.plot(f, rhs, linewidth = 1.5, color = 'k') #label=r'$f \rightarrow \phi(f,R,\delta)$ with $R=2$ and $\delta = \frac{1}{6}$'
+    plt.plot(f, lhs,linewidth = 1.5 ,color = 'blue') #label=r'$f \rightarrow \lambda f$ with $\lambda = \frac{1}{5}$'
+    plt.plot(f, lhs1,linewidth = 1.5, color = 'red') #label=r'$f \rightarrow f$ with $\lambda = 1$'
+    plt.plot(f, lhs2,linewidth = 1.5, color = 'green') #label=r'$f \rightarrow f$ with $\lambda = 2/5$'
+
+    for intersection_point in intersection_points:
+        plt.plot(intersection_point[0], intersection_point[1], marker='o', color='blue')
+    
+    arrow_props = dict(facecolor='black', arrowstyle='->', linewidth=1.2)
+    for i, intersection_point in enumerate(intersection_points):
+        #plt.annotate(f'Intersection {i+1}', intersection_point, textcoords='offset points', xytext=(0,-20), ha='center', fontsize=12)
+        if i == 0:
+            plt.annotate('', xy=(intersection_point[0], intersection_point[1]), xytext=(intersection_point[0]-0.11, intersection_point[1]+0.11), arrowprops=arrow_props)
+            plt.annotate(f'$f_{i+1}$', (intersection_point[0]-0.14, intersection_point[1]+0.12), fontsize=12)
+        if i == 1:
+            plt.annotate('', xy=(intersection_point[0], intersection_point[1]), xytext=(intersection_point[0]-0.11, intersection_point[1]+0.11), arrowprops=arrow_props)
+            plt.annotate(f'$f_{i+1}$', (intersection_point[0]-0.14, intersection_point[1]+0.12), fontsize=12)
+        if i == 2:
+            plt.annotate('', xy=(intersection_point[0], intersection_point[1]), xytext=(intersection_point[0]-0.11, intersection_point[1]-0.11), arrowprops=arrow_props)
+            plt.annotate(f'$f_{i+1}$', (intersection_point[0]-0.16, intersection_point[1]-0.16), fontsize=12)
+
+
+    plt.plot(intersection_point[0], intersection_point[1], marker='o', color='blue', label = 'Equilibrium flow rates')
+
+    plt.xlabel(r'flow rate $f$')
     plt.ylabel(r'$\phi(f,R,\delta)$')
     plt.title('Equilibrium states for Stommels Two Box Model')
+    plt.legend()
+    plt.ylim(-0.5,1.2)
+    plt.xlim(-2,2)
+
+def bifurcation_diagram(R, delta, values_for_lambda):
+    f_prime_values = []  # Store equilibrium solutions (f') for different A values
+    lambda_val = 0  # Initialize lambda_val parameter
+    nn, _, _, _, _, _, _, _, dtau, nstep, _, _, _, _ = initialize_variables()
+
+    for lambda_ in values_for_lambda:
+        # Update the lambda_val parameter with the current A value
+        lambda_val = lambda_
+
+        # Initialize variables and simulate the differential equation
+        x, y = simulate_single_case(R, delta, lambda_val, 0, 0, 0, dtau, nstep, 0, 0, 0)
+
+        # Calculate f' as the last value in the x list
+        f_prime = x[-1]
+        f_prime_values.append(f_prime)
+
+    # Create a bifurcation diagram
+    plt.figure(4, figsize=(8, 6))
+    plt.clf()
+    plt.plot(values_for_lambda, f_prime_values, 'b.')
+    plt.xlabel(r'$\lambda$')
+    plt.ylabel("Equilibrium Solutions (f')")
+    plt.title('Bifurcation Diagram for Stommels Two Box Model')
     plt.grid(True)
 
 def main():
@@ -150,6 +216,8 @@ def main():
     nn, R, delta, lambda_val, q, qdelta, yres, resosc, dtau, nstep, yres0, ni, delT, delS = initialize_variables()
     simulate_differential_equation(nn, R, delta, lambda_val, q, qdelta, resosc, dtau, nstep, yres0, delT, delS)
     calculate_and_plot_values(R, delta, lambda_val)
+    #values_for_lambda = np.linspace(0.01, 1, 100)  # Adjust the range as needed
+    #bifurcation_diagram(R, delta, values_for_lambda)
     plt.show()
 
 main()
