@@ -2,6 +2,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def set_plot_formatting():
+    """
+    This function sets the formatting parameters for the plots using plt.rcParams. 
+    It adjusts the line width, font size, axes linewidth, and label size for the plots.
+    """
     # Set plot formatting parameters
     plt.rcParams['lines.linewidth'] = 1.2
     plt.rcParams['font.size'] = 14
@@ -9,6 +13,11 @@ def set_plot_formatting():
     plt.rcParams['axes.labelsize'] = 14
 
 def initialize_variables():
+    """
+    This function initializes various model parameters and variables used in the simulation. 
+    It defines parameters like R, delta, lambda_val, q, qdelta, yres, and others that govern the behavior of the Stommels Two Box Model. 
+    These parameters represent characteristics of the oceanic system being modeled.
+    """
     # Initialize variables
     nn = 0
 
@@ -32,6 +41,11 @@ def initialize_variables():
     return nn, R, delta, lambda_val, q, qdelta, yres, resosc, dtau, nstep, yres0, ni, delT, delS
 
 def simulate_differential_equation(nn, R, delta, lambda_val, q, qdelta, resosc, dtau, nstep, yres0, delT, delS):
+    """
+    This function performs the core simulation of the Stommels Two Box Model. 
+    It iterates through different combinations of initial conditions (n1 and n2) and calls simulate_single_case() for each combination. 
+    It also calls plot_functions() to create plots based on the simulation results.
+    """
     for n1 in np.arange(0, 1 + delT, delT):
         for n2 in np.arange(0, 1 + delS, delS):
             if n1 == 0 or n1 == 1 or n2 == 0 or n2 == 1:
@@ -40,6 +54,11 @@ def simulate_differential_equation(nn, R, delta, lambda_val, q, qdelta, resosc, 
                 nn = plot_functions(nn, R, lambda_val,dtau, nstep, x, y, d)
 
 def plot_functions(nn, R, lambda_val, dtau, nstep, x, y, d):
+    """
+    This function creates plots to visualize the results of the simulation. 
+    It plots the trajectories of the model's two variables (x and y) on a phase plane, with different markers and colors to represent different cases. 
+    It also marks specific points on the plot (labeled 'a', 'b', 'c').
+    """
     if nn == 0:
         nn = 1
         # Make a time series plot for the first case only
@@ -59,6 +78,10 @@ def plot_functions(nn, R, lambda_val, dtau, nstep, x, y, d):
     return nn
 
 def plot_initial_case(R, lambda_val):
+    """
+    This function generates the initial phase portrait for the Stommels Two Box Model. 
+    It creates a contour plot to visualize the equilibrium states of the system.
+    """
     plt.figure(2, figsize=(8,6))
 
     plt.clf()
@@ -73,8 +96,9 @@ def plot_initial_case(R, lambda_val):
             dm[k1, k2] = (1 / lambda_val) * (R * xm[k2] - ym[k1])
 
     levels = [-10, -8, -6, -4, -2, 0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
+    contour_colors = ['k' if level != 0 else 'k' for level in levels]
 
-    c = plt.contour(xm, ym, dm, levels, colors='k')
+    c = plt.contour(xm, ym, dm, levels, colors=contour_colors)
     plt.clabel(c, inline=True, fontsize=10)
     plt.xlabel('Salinity')
     plt.ylabel('Temperature')
@@ -85,6 +109,10 @@ def plot_initial_case(R, lambda_val):
     plt.grid(True)
 
 def experiment_1(dtau, nstep, x, y, d):
+    """
+    This function generates time series plots for the first case of the simulation. 
+    It plots the evolution of the variables over time.
+    """
     plt.figure(1)
     plt.clf()
     plt.subplot(2, 1, 1)
@@ -98,7 +126,11 @@ def experiment_1(dtau, nstep, x, y, d):
     plt.xlabel('time, non-d')
     plt.ylabel('density diff')
 
-def simulate_single_case(R, delta, lambda_val, q, qdelta, resosc, dtau, nstep, yres0, n1, n2):
+def simulate_single_case(R, delta, lambda_val, q, qdelta, resosc, dtau, nstep, yres0, n1, n2): 
+    """
+    This function simulates a single case of the Stommels Two Box Model given initial conditions (n1 and n2). 
+    It iteratively calculates the values of the model variables (x and y) over a specified number of time steps.
+    """
     x = [n1]  # Initialize x list for this set of initial conditions
     y = [n2]  # Initialize y list for this set of initial conditions
 
@@ -121,6 +153,9 @@ def simulate_single_case(R, delta, lambda_val, q, qdelta, resosc, dtau, nstep, y
     return x,y
 
 def update_variables(R, delta, lambda_val, q, qdelta, dtau, x, y, m, yres, qequil):
+    """
+    This function updates the variables in each time step of the simulation based on the model equations.
+    """
     yh = y[m - 1] + dtau * (yres - y[m - 1]) / 2 - dtau * y[m - 1] * q / 2
     xh = x[m - 1] + dtau * delta * (1 - x[m - 1]) / 2 - dtau * x[m - 1] * q / 2
     qh = q + dtau * qdelta * (qequil - q) / 2
@@ -130,6 +165,10 @@ def update_variables(R, delta, lambda_val, q, qdelta, dtau, x, y, m, yres, qequi
     return qequil,yh,xh,qh
 
 def calculate_and_plot_values(R, delta, lambda_val):
+    """
+    This function calculates and plots equilibrium states for the model by evaluating the functions phi(f, R, delta) and lambda*f. 
+    It also marks the equilibrium flow rates on the plot.
+    """
     t = 2000
     f = np.zeros(t)
     lhs = np.zeros(t)
@@ -186,38 +225,11 @@ def calculate_and_plot_values(R, delta, lambda_val):
     plt.ylim(-0.5,1.2)
     plt.xlim(-2,2)
 
-def bifurcation_diagram(R, delta, values_for_lambda):
-    f_prime_values = []  # Store equilibrium solutions (f') for different A values
-    lambda_val = 0  # Initialize lambda_val parameter
-    nn, _, _, _, _, _, _, _, dtau, nstep, _, _, _, _ = initialize_variables()
-
-    for lambda_ in values_for_lambda:
-        # Update the lambda_val parameter with the current A value
-        lambda_val = lambda_
-
-        # Initialize variables and simulate the differential equation
-        x, y = simulate_single_case(R, delta, lambda_val, 0, 0, 0, dtau, nstep, 0, 0, 0)
-
-        # Calculate f' as the last value in the x list
-        f_prime = x[-1]
-        f_prime_values.append(f_prime)
-
-    # Create a bifurcation diagram
-    plt.figure(4, figsize=(8, 6))
-    plt.clf()
-    plt.plot(values_for_lambda, f_prime_values, 'b.')
-    plt.xlabel(r'$\lambda$')
-    plt.ylabel("Equilibrium Solutions (f')")
-    plt.title('Bifurcation Diagram for Stommels Two Box Model')
-    plt.grid(True)
-
 def main():
     set_plot_formatting()
     nn, R, delta, lambda_val, q, qdelta, yres, resosc, dtau, nstep, yres0, ni, delT, delS = initialize_variables()
     simulate_differential_equation(nn, R, delta, lambda_val, q, qdelta, resosc, dtau, nstep, yres0, delT, delS)
     calculate_and_plot_values(R, delta, lambda_val)
-    #values_for_lambda = np.linspace(0.01, 1, 100)  # Adjust the range as needed
-    #bifurcation_diagram(R, delta, values_for_lambda)
     plt.show()
 
 main()
