@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
+saving_path = '/Users/karlfindhansen/Desktop/'  
+save_plots = False
 
 def set_plot_formatting():
     """
@@ -24,7 +26,7 @@ def initialize_variables():
     # Set model parameters
     R = 2.0        # Absolute value of the ratio of expansion coefficients, x/y
     delta = 1/6    # Conduction rate of salinity with respect to temperature
-    lambda_val = 0.2  # Inverse non-dimensional flushing rate
+    lambda_val = 2/5  # Inverse non-dimensional flushing rate
     q = 0.         # Initial flushing rate (0 to 1)
     qdelta = 100.  # Time constant (inertia) for flushing
     yres = 1.      # Steady reservoir y
@@ -73,8 +75,11 @@ def plot_functions(nn, R, lambda_val, dtau, nstep, x, y, d):
         plt.plot(x, y, 'g')
         plt.plot(x[m2 - 1], y[m2 - 1], '*g')
         plt.text(x[m2 - 1], y[m2 - 1], "a")
-    plt.plot(0.347, 0.777, '*k')
-    plt.text(0.347, 0.777, "b")
+    if lambda_val == 1/5:
+        plt.plot(0.347, 0.777, '*k')
+        plt.text(0.347, 0.777, "b")
+    if save_plots:
+        plt.savefig(saving_path+'phase_portrait.png', dpi=400)
     return nn
 
 def plot_initial_case(R, lambda_val):
@@ -224,6 +229,8 @@ def calculate_and_plot_values(R, delta, lambda_val):
     plt.legend()
     plt.ylim(-0.5,1.2)
     plt.xlim(-2,2)
+    if save_plots:
+        plt.savefig(saving_path+'equilibrium_states.png', dpi=400)
 
 def main():
     set_plot_formatting()
