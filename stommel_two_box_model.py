@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 saving_path = '/Users/karlfindhansen/Desktop/'  
 save_plots = False
+#green_dot_bool = True
+#red_dot_bool = True
 
 def set_plot_formatting():
     """
@@ -56,6 +58,8 @@ def simulate_differential_equation(nn, R, delta, lambda_val, q, qdelta, resosc, 
                 nn = plot_functions(nn, R, lambda_val,dtau, nstep, x, y, d)
 
 def plot_functions(nn, R, lambda_val, dtau, nstep, x, y, d):
+    #global green_dot_bool
+    #global red_dot_bool
     """
     This function creates plots to visualize the results of the simulation. 
     It plots the trajectories of the model's two variables (x and y) on a phase plane, with different markers and colors to represent different cases. 
@@ -68,16 +72,21 @@ def plot_functions(nn, R, lambda_val, dtau, nstep, x, y, d):
         plot_initial_case(R, lambda_val)
     m2 = len(x)
     if d[m2 - 1] >= 0:
+        #if red_dot_bool:
+        plt.plot(x[m2 - 1], y[m2 - 1], 'or', markersize = 10)
+            #red_dot_bool = False
         plt.plot(x, y, 'r--')
-        plt.plot(x[m2 - 1], y[m2 - 1], '*r')
-        plt.text(x[m2 - 1], y[m2 - 1], "c")
+        #plt.text(x[m2 - 1], y[m2 - 1], "c")
     else:
+        #if green_dot_bool:
         plt.plot(x, y, 'g')
-        plt.plot(x[m2 - 1], y[m2 - 1], '*g')
-        plt.text(x[m2 - 1], y[m2 - 1], "a")
+        plt.plot(x[m2 - 1], y[m2 - 1], 'og', markersize = 10)
+            #green_dot_bool = False
+        plt.plot(x, y, 'g')
+        #plt.text(x[m2 - 1], y[m2 - 1], "a")
     if lambda_val == 1/5:
-        plt.plot(0.347, 0.777, '*k')
-        plt.text(0.347, 0.777, "b")
+        plt.plot(0.347, 0.777, 'ok', markersize=10)
+       # plt.text(0.347, 0.777, "b")
     if save_plots:
         plt.savefig(saving_path+'phase_portrait.png', dpi=400)
     return nn
