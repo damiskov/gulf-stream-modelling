@@ -1,9 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
-saving_path = '/Users/karlfindhansen/Desktop/'  
-save_plots = False
-#green_dot_bool = True
-#red_dot_bool = True
+import os
+from scipy.optimize import fsolve
+
+# save the plot in this folder
+saving_path = os.path.join(os.path.dirname(__file__), 'plots')
+#saving_path = '/Users/karlfindhansen/Desktop/Plots Bachelor Thesis'  
+save_plots = True
 
 def set_plot_formatting():
     """
@@ -28,13 +31,15 @@ def initialize_variables():
     # Set model parameters
     R = 2.0        # Absolute value of the ratio of expansion coefficients, x/y
     delta = 1/6    # Conduction rate of salinity with respect to temperature
-    lambda_val = 2/5  # Inverse non-dimensional flushing rate
+    # define lambda as input
+
+    lambda_val = float(input("Enter lambda value: "))  # Inverse non-dimensional flushing rate
     q = 0.         # Initial flushing rate (0 to 1)
     qdelta = 100.  # Time constant (inertia) for flushing
     yres = 1.      # Steady reservoir y
     resosc = 0.    # Amplitude of reservoir y oscillation
     dtau = 0.01    # Time step of non-dimensional time
-    nstep = 1500   # Number of time steps
+    nstep = 10000   # Number of time steps
 
     yres0 = yres
 
@@ -44,7 +49,7 @@ def initialize_variables():
 
     return nn, R, delta, lambda_val, q, qdelta, yres, resosc, dtau, nstep, yres0, ni, delT, delS
 
-def simulate_differential_equation(nn, R, delta, lambda_val, q, qdelta, resosc, dtau, nstep, yres0, delT, delS):
+def simulate_differential_equation(nn, R, delta, lambda_val, q, qdelta, resosc, dtau, nstep, yres0, delT, delS, x1,x2,x3,y1,y2,y3):
     """
     This function performs the core simulation of the Stommels Two Box Model. 
     It iterates through different combinations of initial conditions (n1 and n2) and calls simulate_single_case() for each combination. 
@@ -55,11 +60,10 @@ def simulate_differential_equation(nn, R, delta, lambda_val, q, qdelta, resosc, 
             if n1 == 0 or n1 == 1 or n2 == 0 or n2 == 1:
                 x, y = simulate_single_case(R, delta, lambda_val, q, qdelta, resosc, dtau, nstep, yres0, n1, n2)
                 d = [R * xi - yi for xi, yi in zip(x, y)]
-                nn = plot_functions(nn, R, lambda_val,dtau, nstep, x, y, d)
+                nn = plot_functions(nn, R, lambda_val,dtau, nstep, x, y, d,x1,x2,x3,y1,y2,y3)
 
-def plot_functions(nn, R, lambda_val, dtau, nstep, x, y, d):
-    #global green_dot_bool
-    #global red_dot_bool
+def plot_functions(nn, R, lambda_val, dtau, nstep, x, y, d, x1,x2,x3,y1,y2,y3):
+
     """
     This function creates plots to visualize the results of the simulation. 
     It plots the trajectories of the model's two variables (x and y) on a phase plane, with different markers and colors to represent different cases. 
@@ -72,23 +76,28 @@ def plot_functions(nn, R, lambda_val, dtau, nstep, x, y, d):
         plot_initial_case(R, lambda_val)
     m2 = len(x)
     if d[m2 - 1] >= 0:
-        #if red_dot_bool:
-        plt.plot(x[m2 - 1], y[m2 - 1], 'or', markersize = 10)
-            #red_dot_bool = False
+        if lambda_val < 0.338:
+            plt.plot(x1,y1, 'og', markersize = 10)
+            plt.plot(x2,y2, 'ok', markersize = 10)
+            plt.plot(x3,y3, 'or', markersize = 10)
         plt.plot(x, y, 'r--')
-        #plt.text(x[m2 - 1], y[m2 - 1], "c")
+    
     else:
-        #if green_dot_bool:
+        if lambda_val < 0.338:
+            plt.plot(x3,y3, 'or', markersize = 10)
         plt.plot(x, y, 'g')
-        plt.plot(x[m2 - 1], y[m2 - 1], 'og', markersize = 10)
-            #green_dot_bool = False
-        plt.plot(x, y, 'g')
-        #plt.text(x[m2 - 1], y[m2 - 1], "a")
-    if lambda_val == 1/5:
-        plt.plot(0.347, 0.777, 'ok', markersize=10)
-       # plt.text(0.347, 0.777, "b")
+    if lambda_val > 0.338:
+        plt.plot(x3,y3, 'or', markersize = 10)
+
+    if not os.path.exists(saving_path):
+        os.makedirs(saving_path)
+
+    file_name = f'phase_portrait_lambda_{lambda_val}.png'
+    desktop_path = os.path.join(saving_path, file_name)
+
     if save_plots:
-        plt.savefig(saving_path+'phase_portrait.png', dpi=400)
+        plt.savefig(desktop_path, dpi=300)
+
     return nn
 
 def plot_initial_case(R, lambda_val):
@@ -116,7 +125,6 @@ def plot_initial_case(R, lambda_val):
     plt.clabel(c, inline=True, fontsize=10)
     plt.xlabel('Salinity')
     plt.ylabel('Temperature')
-    plt.title("Phase portrait for Stommels Two Box Model")
     plt.ylim(0,1)
     plt.xlim(0,1)
 
@@ -234,21 +242,107 @@ def calculate_and_plot_values(R, delta, lambda_val):
 
     plt.xlabel(r'flow rate $f$')
     plt.ylabel(r'$\phi(f,R,\delta)$')
-    plt.title('Equilibrium states for Stommels Two Box Model')
     plt.legend()
     plt.ylim(-0.5,1.2)
     plt.xlim(-2,2)
+    if not os.path.exists(saving_path):
+        os.makedirs(saving_path)
+
+    file_name = f'f_equilibrium_states_{lambda_val}.png'
+    desktop_path = os.path.join(saving_path, file_name)
+
     if save_plots:
-        plt.savefig(saving_path+'equilibrium_states.png', dpi=400)
+        plt.savefig(desktop_path, dpi=300)
+
+def find_equlibrium_flows(lambda_val):
+    def equation(f, lambda_val):
+        return lambda_val * f + 1 / (1 + abs(f)) - (2/6) / ((1/6) + abs(f))
+
+    def find_distinct_roots(lambda_val, num_initial_guesses=100, margin=0.1):
+        initial_guesses = np.linspace(-2, 2, num_initial_guesses)
+        fequilibria = []
+        roots = []
+
+        for initial_guess in initial_guesses:
+            root = fsolve(equation, x0=initial_guess, args=(lambda_val,))
+            if root not in roots:
+                roots.append(root)
+                fequilibria.append(root[0])
+
+        distinct_roots = []
+        for num in fequilibria:
+            is_distinct = True
+
+            for distinct_num in distinct_roots:
+                if abs(num - distinct_num) <= margin:
+                    is_distinct = False
+                    break
+
+            if is_distinct:
+                distinct_roots.append(num)
+
+        return np.sort(distinct_roots)
+
+    def main(lambda_val):
+        distinct_roots = find_distinct_roots(lambda_val)
+    
+        if lambda_val < 0.333801:
+            f1, f2, f3 = distinct_roots[0], distinct_roots[1], distinct_roots[2]
+            print(f'The equilibrium flow rates are: f1 = {f1}, f2 = {f2}, f3 = {f3}')
+            return f1, f2, f3
+        else:
+            f3 = distinct_roots[1]
+            print(f'The equibrium flow rate is: f3 = {f3}')
+            return f3
+
+    if lambda_val < 0.333801:
+        f1, f2, f3 = main(lambda_val)
+        return f1, f2, f3
+    else:
+        f3 = main(lambda_val)
+        return f3
+    
+    
+def calculate_stationary_points(lambda_val, f3, f1=None, f2=None):
+    if lambda_val < 0.333801:
+        x1, y1 = (1/6) / ((1/6) + abs(f1)), 1 / (1 + abs(f1))
+        x2, y2 = (1/6) / ((1/6) + abs(f2)), 1 / (1 + abs(f2))
+        x3, y3 = (1/6) / ((1/6) + abs(f3)), 1 / (1 + abs(f3))
+        print('The equilibrium points are:')
+        print(f'x1 = {x1}, y1 = {y1}')
+        print(f'x2 = {x2}, y2 = {y2}')
+        print(f'x3 = {x3}, y3 = {y3}')
+
+        return x1, y1, x2, y2, x3, y3
+    
+    else:
+        x3, y3 = (1/6) / ((1/6) + abs(f3)), 1 / (1 + abs(f3))
+        print('The equilibrium point is:')
+        print(f'x3 = {x3}, y3 = {y3}')
+        return x3, y3
+
+
 
 def main():
     set_plot_formatting()
     nn, R, delta, lambda_val, q, qdelta, yres, resosc, dtau, nstep, yres0, ni, delT, delS = initialize_variables()
-    simulate_differential_equation(nn, R, delta, lambda_val, q, qdelta, resosc, dtau, nstep, yres0, delT, delS)
+    x1, y1, x2, y2, x3, y3 = find_equilibrium_points(lambda_val)
+    
+    simulate_differential_equation(nn, R, delta, lambda_val, q, qdelta, resosc, dtau, nstep, yres0, delT, delS, x1, x2, x3, y1,y2,y3)
     calculate_and_plot_values(R, delta, lambda_val)
     plt.show()
 
+def find_equilibrium_points(lambda_val):
+    if lambda_val < 0.333801:
+        f1, f2, f3 = find_equlibrium_flows(lambda_val)
+    else:
+        f3 = find_equlibrium_flows(lambda_val)
+    if lambda_val < 0.333801:
+        x1, y1, x2, y2, x3, y3 = calculate_stationary_points(lambda_val, f1=f1, f2=f2, f3=f3)
+    else:
+        x1, x2, y1, y2 = None, None, None, None
+        x3, y3 = calculate_stationary_points(lambda_val,f3=f3)
+    return x1,y1,x2,y2,x3,y3
+
 main()
-
-
 
