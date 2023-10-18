@@ -2,10 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 from scipy.optimize import fsolve
-
-# save the plot in this folder
 saving_path = os.path.join(os.path.dirname(__file__), 'plots')
-#saving_path = '/Users/karlfindhansen/Desktop/Plots Bachelor Thesis'  
 save_plots = True
 
 def set_plot_formatting():
@@ -31,8 +28,6 @@ def initialize_variables():
     # Set model parameters
     R = 2.0        # Absolute value of the ratio of expansion coefficients, x/y
     delta = 1/6    # Conduction rate of salinity with respect to temperature
-    # define lambda as input
-
     lambda_val = float(input("Enter lambda value: "))  # Inverse non-dimensional flushing rate
     q = 0.         # Initial flushing rate (0 to 1)
     qdelta = 100.  # Time constant (inertia) for flushing
@@ -63,7 +58,7 @@ def simulate_differential_equation(nn, R, delta, lambda_val, q, qdelta, resosc, 
                 nn = plot_functions(nn, R, lambda_val,dtau, nstep, x, y, d,x1,x2,x3,y1,y2,y3)
 
 def plot_functions(nn, R, lambda_val, dtau, nstep, x, y, d, x1,x2,x3,y1,y2,y3):
-
+    global counter
     """
     This function creates plots to visualize the results of the simulation. 
     It plots the trajectories of the model's two variables (x and y) on a phase plane, with different markers and colors to represent different cases. 
@@ -77,18 +72,18 @@ def plot_functions(nn, R, lambda_val, dtau, nstep, x, y, d, x1,x2,x3,y1,y2,y3):
     m2 = len(x)
     if d[m2 - 1] >= 0:
         if lambda_val < 0.338:
-            plt.plot(x1,y1, 'og', markersize = 10)
-            plt.plot(x2,y2, 'ok', markersize = 10)
-            plt.plot(x3,y3, 'or', markersize = 10)
+            plt.plot(x1, y1, 'bo', markersize=5, label='Circle')
+            plt.plot(x2, y2, 'b*', markersize=5, label='Star')
+            plt.plot(x3, y3, 'bs', markersize=5, label='Square')
         plt.plot(x, y, 'r--')
     
     else:
         if lambda_val < 0.338:
-            plt.plot(x3,y3, 'or', markersize = 10)
+            plt.plot(x3,y3, 'ob', markersize = 5)
         plt.plot(x, y, 'g')
     if lambda_val > 0.338:
-        plt.plot(x3,y3, 'or', markersize = 10)
-
+        plt.plot(x3,y3, 'ob', markersize = 5)
+    
     if not os.path.exists(saving_path):
         os.makedirs(saving_path)
 
@@ -205,7 +200,7 @@ def calculate_and_plot_values(R, delta, lambda_val):
         lhs[k - 1] = lambda_val * f[k - 1]
         rhs[k - 1] = (R / (1 + abs(f[k - 1]) / delta)) - 1 / (1 + abs(f[k - 1]))
         ## add new lines here for new lambda values
-        lhs1[k-1] = 1 * f[k - 1]
+        lhs1[k-1] = 1/3 * f[k - 1]
         lhs2[k-1] = 2/5 * f[k - 1]
 
     ins_plot1 = (-1.061,-0.22)
