@@ -28,7 +28,7 @@ def initialize_variables():
     # Set model parameters
     R = 2.0        # Absolute value of the ratio of expansion coefficients, x/y
     delta = 1/6    # Conduction rate of salinity with respect to temperature
-    lambda_val = float(input("Enter lambda value: "))  # Inverse non-dimensional flushing rate
+    lambda_val = 0.2  # Inverse non-dimensional flushing rate
     q = 0.         # Initial flushing rate (0 to 1)
     qdelta = 100.  # Time constant (inertia) for flushing
     yres = 1.      # Steady reservoir y
@@ -215,9 +215,13 @@ def calculate_and_plot_values(R, delta, lambda_val):
     plt.plot(f, lhs,linewidth = 1.5 ,color = 'blue') #label=r'$f \rightarrow \lambda f$ with $\lambda = \frac{1}{5}$'
     plt.plot(f, lhs1,linewidth = 1.5, color = 'red') #label=r'$f \rightarrow f$ with $\lambda = 1$'
     plt.plot(f, lhs2,linewidth = 1.5, color = 'green') #label=r'$f \rightarrow f$ with $\lambda = 2/5$'
-
+    labelled=False
     for intersection_point in intersection_points:
-        plt.plot(intersection_point[0], intersection_point[1], marker='o', color='blue')
+        if not labelled:
+            plt.plot(intersection_point[0], intersection_point[1], marker='x', color='blue', label = 'Equilibrium flow rates',alpha=0)
+            labelled=True
+        else:
+            plt.plot(intersection_point[0], intersection_point[1], marker='x', color='blue', alpha=0)
     
     arrow_props = dict(facecolor='black', arrowstyle='->', linewidth=1.2)
     for i, intersection_point in enumerate(intersection_points):
@@ -233,13 +237,42 @@ def calculate_and_plot_values(R, delta, lambda_val):
             plt.annotate(f'$f_{i+1}$', (intersection_point[0]-0.16, intersection_point[1]-0.16), fontsize=12)
 
 
-    plt.plot(intersection_point[0], intersection_point[1], marker='o', color='blue', label = 'Equilibrium flow rates')
+    # plt.plot(intersection_point[0], intersection_point[1], marker='x', color='blue', label = 'Equilibrium flow rates', alpha=0.5)
 
-    plt.xlabel(r'flow rate $f$')
-    plt.ylabel(r'$\phi(f,R,\delta)$')
-    plt.legend()
+    plt.ylabel(r'$f$', rotation=0)
+    plt.xlabel(r'$\phi(f,R,\delta)$')
+
+    
+    plt.gca().spines['left'].set_position('center')
+    plt.gca().spines['bottom'].set_position('zero')
+    plt.gca().spines['right'].set_color('none')
+    plt.gca().spines['top'].set_color('none')
+
+    # Set grid lines, but no x-axis and y-axis ticks
+    plt.grid(True, which='both', axis='both')
+    # remove x and y tick labels
+    plt.xticks([-2,-1.5,-1, -0.5, 0.5, 1, 1.5, 2])
+    plt.yticks([-0.5, 0.5, 1])
+
+    
+
+    # plt.legend()
     plt.ylim(-0.5,1.2)
     plt.xlim(-2,2)
+    # Set grid lines, but no x-axis and y-axis ticks
+    plt.grid(True, which='both', axis='both', linestyle='--')
+
+    # set y-axis label at the top, x-axis label at the right
+    ax = plt.gca()
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_position('center')
+    ax.spines['bottom'].set_position('zero')
+    ax.xaxis.set_label_position('top')
+    # set y-axis label to the right, at y = 0
+    ax.yaxis.set_label_coords(1.05, 0.3)
+
+    
     if not os.path.exists(saving_path):
         os.makedirs(saving_path)
 
@@ -247,7 +280,7 @@ def calculate_and_plot_values(R, delta, lambda_val):
     desktop_path = os.path.join(saving_path, file_name)
 
     if save_plots:
-        plt.savefig(desktop_path, dpi=300)
+        plt.savefig(desktop_path, dpi=600)
 
 def find_equlibrium_flows(lambda_val):
     def equation(f, lambda_val):
