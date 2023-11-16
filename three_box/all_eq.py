@@ -114,6 +114,10 @@ x4y4 = [(x4(lambda_), y4(lambda_)) if lambda_ >= min_lambda and lambda_ <= max_l
 eigenvalsx4y4 = [None, None, None, None, None, None, [0.2031357338, -2.754223733], [0.8885479048, -2.405336711], [1.273810080, -2.136196493], [1.588491611, -1.869890570], [-2.999981676, -0.9901078761], [-2.998414119, -0.9075159468], [-2.985348044, -0.7159154856], [-2.887115285, -0.1937855624], None, None, None, None, None, None]
 stablex4y4 = stable(eigenvalsx4y4)
 
+
+all_equilibria = [x1y1, x1y2, x1y3, x1y4, x2y1, x2y2, x2y3, x2y4, x3y1, x3y2, x3y3, x3y4, x4y1, x4y2, x4y3, x4y4]
+all_stability = [stablex1y1, stablex1y2, stablex1y3, stablex1y4, stablex2y1, stablex2y2, stablex2y3, stablex2y4, stablex3y1, stablex3y2, stablex3y3, stablex3y4, stablex4y1, stablex4y2, stablex4y3, stablex4y4]
+
 # First plot of just the equilibrium points
 
 colors = ['red', 'green', 'blue', 'yellow', 'magenta', 'cyan', 'orange', 'purple', 'darkgreen', 'navy', 'gold', 'saddlebrown', 'indigo', 'brown', 'tomato', 'steelblue']
@@ -629,14 +633,194 @@ def flow_rate_plot():
 
      
 
+def get_all_unstable():
+    # Function that iterates through all lambda, goes through all equilibria points at that lambda, checks if they are stable or not, and returns a list of all unstable equilibria points
+    # Returns a list of 20 lists of tuples. Each list of tuples corresponds to a lambda, and each tuple is an unstable equilibrium point at that lambda
 
-plot_equilibria()
+    unstable = []
 
-plot_eigenvalues(eigenvalsx2y2)
+    for i, l in enumerate(lambdas):
+
+        unstable_at_lambda = []
+
+        if stablex1y1[i] == False:
+            unstable_at_lambda.append(x1y1[i])
+        if stablex1y2[i] == False:
+            unstable_at_lambda.append(x1y2[i])
+        if stablex1y3[i] == False:
+            unstable_at_lambda.append(x1y3[i])
+        if stablex1y4[i] == False:
+            unstable_at_lambda.append(x1y4[i])
+        if stablex2y1[i] == False:
+            unstable_at_lambda.append(x2y1[i])
+        if stablex2y2[i] == False:
+            unstable_at_lambda.append(x2y2[i])
+        if stablex2y3[i] == False:
+            unstable_at_lambda.append(x2y3[i])
+        if stablex2y4[i] == False:
+            unstable_at_lambda.append(x2y4[i])
+        if stablex3y1[i] == False:
+            unstable_at_lambda.append(x3y1[i])
+        if stablex3y2[i] == False:
+            unstable_at_lambda.append(x3y2[i])
+        if stablex3y3[i] == False:
+            unstable_at_lambda.append(x3y3[i])
+        if stablex3y4[i] == False:
+            unstable_at_lambda.append(x3y4[i])
+        if stablex4y1[i] == False:
+            unstable_at_lambda.append(x4y1[i])
+        if stablex4y2[i] == False:
+            unstable_at_lambda.append(x4y2[i])
+        if stablex4y3[i] == False:
+            unstable_at_lambda.append(x4y3[i])
+        if stablex4y4[i] == False:
+            unstable_at_lambda.append(x4y4[i])
+        
+        unstable.append(unstable_at_lambda)
+    
+    return unstable
+
+def get_all_stable():
+
+    # Same as above, but for stable equilibria
+
+    stable = []
+
+    for i, l in enumerate(lambdas):
+            
+            stable_at_lambda = []
+    
+            if stablex1y1[i] == True:
+                stable_at_lambda.append(x1y1[i])
+            if stablex1y2[i] == True:
+                stable_at_lambda.append(x1y2[i])
+            if stablex1y3[i] == True:
+                stable_at_lambda.append(x1y3[i])
+            if stablex1y4[i] == True:
+                stable_at_lambda.append(x1y4[i])
+            if stablex2y1[i] == True:
+                stable_at_lambda.append(x2y1[i])
+            if stablex2y2[i] == True:
+                stable_at_lambda.append(x2y2[i])
+            if stablex2y3[i] == True:
+                stable_at_lambda.append(x2y3[i])
+            if stablex2y4[i] == True:
+                stable_at_lambda.append(x2y4[i])
+            if stablex3y1[i] == True:
+                stable_at_lambda.append(x3y1[i])
+            if stablex3y2[i] == True:
+                stable_at_lambda.append(x3y2[i])
+            if stablex3y3[i] == True:
+                stable_at_lambda.append(x3y3[i])
+            if stablex3y4[i] == True:
+                stable_at_lambda.append(x3y4[i])
+            if stablex4y1[i] == True:
+                stable_at_lambda.append(x4y1[i])
+            if stablex4y2[i] == True:
+                stable_at_lambda.append(x4y2[i])
+            if stablex4y3[i] == True:
+                stable_at_lambda.append(x4y3[i])
+            if stablex4y4[i] == True:
+                stable_at_lambda.append(x4y4[i])
+            
+            stable.append(stable_at_lambda)
+
+    return stable
+
+def plot_unstable():
+    # Function that plots all unstable equilibria as a function of lambda
+    # Plots stable equilibria as blue, filled dots and unstable equilibria as red, unfilled circles
+
+    unstable = get_all_unstable()
+    
+    fig, ax = plt.subplots(figsize=(10, 10))
+    ax.set_xlabel(r'$\lambda$')
+    ax.set_ylabel(r'$x$')
+    ax.set_xlim(-2, 2)
+
+    for i, l in enumerate(lambdas):
+        if unstable[i][0] != None:
+            for j in unstable[i]:
+                ax.scatter(l, 2-j[0]-j[1], s=50, color='red', facecolors='none')
+        
+    plt.grid()
+    plt.show()
+
+
+def plot_flow_final():
+    
+    # Function that plots all unstable and stable flow rates (2-x-y).
+    # dashed red lines between unstable points, solid blue lines between stable points, and solid black lines between stable and unstable points
+
+    unstable = get_all_unstable()
+
+    stable = get_all_stable()
+
+    fig, ax = plt.subplots(figsize=(10, 10))
+
+    ax.set_xlabel(r'$\lambda$')
+    ax.set_ylabel(r'$2-x-y$')
+
+    ax.set_xlim(-2, 2)
+
+    # for i, l in enumerate(lambdas):
+    #     if unstable[i][0] != None:
+    #         for j in unstable[i]:
+    #             ax.scatter(l, 2-j[0]-j[1], s=50, color='red', facecolors='none')
+    #     if stable[i][0] != None:
+    #         for j in stable[i]:
+    #             ax.scatter(l, 2-j[0]-j[1], s=50, color='blue')
+
+
+    for i, l in enumerate(lambdas): # For all lambda
+        print(f"Key: {i}")
+        print(f"lambda = {l}")
+        for j, eqm in enumerate(all_equilibria): # For all equilibria, at this lambda
+            if eqm[i] != None: # If there is a real equilibrium value at this lambda
+                if all_stability[i][j]: # If this equilibrium point is stable
+                    if j == 0 or i==0: # If this is the first equilibrium point, just make a scatter point
+                        ax.scatter(l, 2-eqm[i][0]-eqm[i][1], s=50, color='blue') # Plot it as a blue dot
+                    else: # If not the first equilibrium point
+                        ax.plot([lambdas[i-1], l], [2-eqm[i-1][0]-eqm[i-1][1], 2-eqm[i][0]-eqm[i][1]], color='blue')
+                        # Plot a blue line between this equilibrium point and the previous one
+                else: # If this equilibrium point is unstable
+                    if j == 0 or i==0:
+                        ax.scatter(l, 2-eqm[i][0]-eqm[i][1], s=50, color='red', facecolors='none')
+                    else:
+                        # Checking if there is a previous equilibrium point
+                        print([lambdas[i-1], l])
+                        # print(all_equilibria[j-1][i-1][0])
+                        
+                        # print(2-eqm[i][0]-eqm[i][1])
+                        print(eqm[i-1])
+                        print(eqm[i])
+
+
+                        ax.plot([lambdas[i-1], l], [2-eqm[i-1][0]-eqm[i-1][1], 2-eqm[i][0]-eqm[i][1]], color='red', linestyle='dashed')
+                        # Plot a red dashed line between this equilibrium point and the previous one
+                    
+
+
+
+                
+
+        
+    plt.grid()
+    plt.show()
+
+
+# plot_flow_final()
+
+
+# plot_equilibria()
+
+# plot_eigenvalues(eigenvalsx2y2)
 
 plot_eq_3D()
 
-plot_X_eq()
-plot_Y_eq()
+# plot_X_eq()
+# plot_Y_eq()
 
-flow_rate_plot()
+# flow_rate_plot()
+
+# flow_rate_plot2()
