@@ -127,7 +127,6 @@ colors = ['red', 'green', 'blue', 'yellow', 'magenta', 'cyan', 'orange', 'purple
 # Function that plots all equilibrium points and their stability for a given lambda
 def plot_equilibria(x1y1=x1y1, x1y2=x1y2, x1y3=x1y3, x1y4=x1y4, x2y1=x2y1, x2y2=x2y2, x2y3=x2y3, x2y4=x2y4, x3y1=x3y1, x3y2=x3y2, x3y3=x3y3, x3y4=x3y4, x4y1=x4y1, x4y2=x4y2, x4y3=x4y3, x4y4=x4y4, lambdas=lambdas,colors=colors):
     fig, ax = plt.subplots(figsize=(10, 10))
-    plt.rcParams.update({'dpi': 600})
     ax.set_xlim(-2, 2)
     ax.set_ylim(-2, 2)
     ax.set_xlabel('x')
@@ -232,7 +231,7 @@ def plot_eigenvalues(eigenvals, lambdas=lambdas):
     for i, l in enumerate(lambdas): # Iterate through lambdas
         if eigenvals[i] != None:
             for j in eigenvals[i]:  # iterate through eigenvals
-                if j < 0: # Check stability
+                if j >= 0: # Check stability
                     ax.scatter(l, j, s=50, color='red', facecolors='none')
                 else:
                     ax.scatter(l, j, s=50, color='blue')
@@ -259,86 +258,163 @@ def plot_eq_3D(x1y1=x1y1, x1y2=x1y2, x1y3=x1y3, x1y4=x1y4, x2y1=x2y1, x2y2=x2y2,
     for i in range(len(lambdas)):
         if x1y1[i] != None:
             if stablex1y1[i] == True:
-                ax.scatter(lambdas[i], x1y1[i][0], x1y1[i][1], s=50, color='blue')
+                ax.scatter(lambdas[i], x1y1[i][0], x1y1[i][1], s=50, color='blue', alpha=0.5)
             else:
                 ax.scatter(lambdas[i], x1y1[i][0], x1y1[i][1], s=50, color='red', facecolors='none')
         if x1y2[i] != None:
             if stablex1y2[i] == True:
-                ax.scatter(lambdas[i], x1y2[i][0], x1y2[i][1], s=50, color='blue')
+                ax.scatter(lambdas[i], x1y2[i][0], x1y2[i][1], s=50, color = 'blue', alpha=0.5)
             else:
                 ax.scatter(lambdas[i], x1y2[i][0], x1y2[i][1], s=50, color='red', facecolors='none')
         if x1y3[i] != None:
             if stablex1y3[i] == True:
-                ax.scatter(lambdas[i], x1y3[i][0], x1y3[i][1], s=50, color='blue')
+                ax.scatter(lambdas[i], x1y3[i][0], x1y3[i][1], s=50, color = 'blue', alpha=0.5)
             else:
                 ax.scatter(lambdas[i], x1y3[i][0], x1y3[i][1], s=50, color='red', facecolors='none')
         if x1y4[i] != None:
             if stablex1y4[i] == True:
-                ax.scatter(lambdas[i], x1y4[i][0], x1y4[i][1], s=50, color='blue')
+                ax.scatter(lambdas[i], x1y4[i][0], x1y4[i][1], s=50, color = 'blue', alpha=0.5)
             else:
                 ax.scatter(lambdas[i], x1y4[i][0], x1y4[i][1], s=50, color='red', facecolors='none')
         if x2y1[i] != None:
             if stablex2y1[i] == True:
-                ax.scatter(lambdas[i], x2y1[i][0], x2y1[i][1], s=50, color='blue')
+                ax.scatter(lambdas[i], x2y1[i][0], x2y1[i][1], s=50, color = 'blue', alpha=0.5)
             else:
                 ax.scatter(lambdas[i], x2y1[i][0], x2y1[i][1], s=50, color='red', facecolors='none')
         if x2y2[i] != None:
             if stablex2y2[i] == True:
-                ax.scatter(lambdas[i], x2y2[i][0], x2y2[i][1], s=50, color='blue')
+                ax.scatter(lambdas[i], x2y2[i][0], x2y2[i][1], s=50, color = 'blue', alpha=0.5)
             else:
                 ax.scatter(lambdas[i], x2y2[i][0], x2y2[i][1], s=50, color='red', facecolors='none')
         if x2y3[i] != None:
             if stablex2y3[i] == True:
-                ax.scatter(lambdas[i], x2y3[i][0], x2y3[i][1], s=50, color='blue')
+                ax.scatter(lambdas[i], x2y3[i][0], x2y3[i][1], s=50, color = 'blue', alpha=0.5)
             else:
                 ax.scatter(lambdas[i], x2y3[i][0], x2y3[i][1], s=50, color='red', facecolors='none')
         if x2y4[i] != None:
             if stablex2y4[i] == True:
-                ax.scatter(lambdas[i], x2y4[i][0], x2y4[i][1], s=50, color='blue')
+                ax.scatter(lambdas[i], x2y4[i][0], x2y4[i][1], s=50, color = 'blue', alpha=0.5)
             else:
                 ax.scatter(lambdas[i], x2y4[i][0], x2y4[i][1], s=50, color='red', facecolors='none')
         if x3y1[i] != None:
             if stablex3y1[i] == True:
-                ax.scatter(lambdas[i], x3y1[i][0], x3y1[i][1], s=50, color='blue')
+                ax.scatter(lambdas[i], x3y1[i][0], x3y1[i][1], s=50, color = 'blue', alpha=0.5)
             else:
                 ax.scatter(lambdas[i], x3y1[i][0], x3y1[i][1], s=50, color='red', facecolors='none')
         if x3y2[i] != None:
             if stablex3y2[i] == True:
-                ax.scatter(lambdas[i], x3y2[i][0], x3y2[i][1], s=50, color='blue')
+                ax.scatter(lambdas[i], x3y2[i][0], x3y2[i][1], s=50, color = 'blue', alpha=0.5)
             else:
                 ax.scatter(lambdas[i], x3y2[i][0], x3y2[i][1], s=50, color='red', facecolors='none')
         if x3y3[i] != None:
             if stablex3y3[i] == True:
-                ax.scatter(lambdas[i], x3y3[i][0], x3y3[i][1], s=50, color='blue')
+                ax.scatter(lambdas[i], x3y3[i][0], x3y3[i][1], s=50, color = 'blue', alpha=0.5)
             else:
                 ax.scatter(lambdas[i], x3y3[i][0], x3y3[i][1], s=50, color='red', facecolors='none')
         if x3y4[i] != None:
             if stablex3y4[i] == True:
-                ax.scatter(lambdas[i], x3y4[i][0], x3y4[i][1], s=50, color='blue')
+                ax.scatter(lambdas[i], x3y4[i][0], x3y4[i][1], s=50, color = 'blue', alpha=0.5)
             else:
                 ax.scatter(lambdas[i], x3y4[i][0], x3y4[i][1], s=50, color='red', facecolors='none')
         if x4y1[i] != None:
             if stablex4y1[i] == True:
-                ax.scatter(lambdas[i], x4y1[i][0], x4y1[i][1], s=50, color='blue')
+                ax.scatter(lambdas[i], x4y1[i][0], x4y1[i][1], s=50, color = 'blue', alpha=0.5)
             else:
                 ax.scatter(lambdas[i], x4y1[i][0], x4y1[i][1], s=50, color='red', facecolors='none')
         if x4y2[i] != None:
             if stablex4y2[i] == True:
-                ax.scatter(lambdas[i], x4y2[i][0], x4y2[i][1], s=50, color='blue')
+                ax.scatter(lambdas[i], x4y2[i][0], x4y2[i][1], s=50, color = 'blue', alpha=0.5)
             else:
                 ax.scatter(lambdas[i], x4y2[i][0], x4y2[i][1], s=50, color='red', facecolors='none')
         if x4y3[i] != None:
             if stablex4y3[i] == True:
-                ax.scatter(lambdas[i], x4y3[i][0], x4y3[i][1], s=50, color='blue')
+                ax.scatter(lambdas[i], x4y3[i][0], x4y3[i][1], s=50, color = 'blue', alpha=0.5)
             else:
                 ax.scatter(lambdas[i], x4y3[i][0], x4y3[i][1], s=50, color='red', facecolors='none')
         if x4y4[i] != None:
             if stablex4y4[i] == True:
-                ax.scatter(lambdas[i], x4y4[i][0], x4y4[i][1], s=50, color='blue')
+                ax.scatter(lambdas[i], x4y4[i][0], x4y4[i][1], s=50, color = 'blue', alpha=0.5)
             else:
                 ax.scatter(lambdas[i], x4y4[i][0], x4y4[i][1], s=50, color='red', facecolors='none')
         
     plt.show()
+
+
+
+
+def eq_3D_lam_z_axis():
+    # Same as above, but with lambda as z-axis
+    fig = plt.figure(figsize=(10, 10))
+    ax = fig.add_subplot(111, projection='3d')
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel(r'$\lambda$')
+    ax.set_xlim(-2, 2)
+    ax.set_ylim(-0.6, 1.6)
+    ax.set_zlim(-2, 2)
+
+    for i in range(len(lambdas)):
+
+        if x1y1[i] != None:
+            if stablex1y1[i] == True:
+                ax.scatter(x1y1[i][0], x1y1[i][1], lambdas[i], s=50, color='blue', alpha=0.5)
+            else:
+                ax.scatter(x1y1[i][0], x1y1[i][1], lambdas[i], s=50, color='red', facecolors='none')
+        if x1y2[i] != None:
+            if stablex1y2[i] == True:
+                ax.scatter(x1y2[i][0], x1y2[i][1], lambdas[i], s=50, color='blue', alpha=0.5)
+            else:
+                ax.scatter(x1y2[i][0], x1y2[i][1], lambdas[i], s=50, color='red', facecolors='none')
+        if x1y3[i] != None:
+            if stablex1y3[i] == True:
+                ax.scatter(x1y3[i][0], x1y3[i][1], lambdas[i], s=50, color='blue', alpha=0.5)
+            else:
+                ax.scatter(x1y3[i][0], x1y3[i][1], lambdas[i], s=50, color='red', facecolors='none')
+        if x1y4[i] != None:
+            if stablex1y4[i] == True:
+                ax.scatter(x1y4[i][0], x1y4[i][1], lambdas[i], s=50, color='blue', alpha=0.5)
+            else:
+                ax.scatter(x1y4[i][0], x1y4[i][1], lambdas[i], s=50, color='red', facecolors='none')
+        if x2y1[i] != None:
+            if stablex2y1[i] == True:
+                ax.scatter(x2y1[i][0], x2y1[i][1], lambdas[i], s=50, color='blue', alpha=0.5)
+            else:
+                ax.scatter(x2y1[i][0], x2y1[i][1], lambdas[i], s=50, color='red', facecolors='none')
+        if x2y2[i] != None:
+            if stablex2y2[i] == True:
+                ax.scatter(x2y2[i][0], x2y2[i][1], lambdas[i], s=50, color='blue', alpha=0.5)
+            else:
+                ax.scatter(x2y2[i][0], x2y2[i][1], lambdas[i], s=50, color='red', facecolors='none')
+        if x2y3[i] != None:
+            if stablex2y3[i] == True:
+                ax.scatter(x2y3[i][0], x2y3[i][1], lambdas[i], s=50, color='blue', alpha=0.5)
+            else:
+                ax.scatter(x2y3[i][0], x2y3[i][1], lambdas[i], s=50, color='red', facecolors='none')
+        if x2y4[i] != None:
+            if stablex2y4[i] == True:
+                ax.scatter(x2y4[i][0], x2y4[i][1], lambdas[i], s=50, color='blue', alpha=0.5)
+            else:
+                ax.scatter(x2y4[i][0], x2y4[i][1], lambdas[i], s=50, color='red', facecolors='none')
+        if x3y1[i] != None:
+            if stablex3y1[i] == True:
+                ax.scatter(x3y1[i][0], x3y1[i][1], lambdas[i], s=50, color='blue', alpha=0.5)
+            else:
+                ax.scatter(x3y1[i][0], x3y1[i][1], lambdas[i], s=50, color='red', facecolors='none')
+        if x3y2[i] != None:
+            if stablex3y2[i] == True:
+                ax.scatter(x3y2[i][0], x3y2[i][1], lambdas[i], s=50, color='blue', alpha=0.5)
+            else:
+                ax.scatter(x3y2[i][0], x3y2[i][1], lambdas[i], s=50, color='red', facecolors='none')
+        if x3y3[i] != None:
+            if stablex3y3[i] == True:
+                ax.scatter(x3y3[i][0], x3y3[i][1], lambdas[i], s=50, color='blue', alpha=0.5)
+            else:
+                ax.scatter(x3y3[i][0], x3y3[i][1], lambdas[i], s=50, color='red', facecolors='none')
+        if x3y4[i] != None:
+            if stablex3y4[i] == True:
+                ax.scatter(x3y4[i][0], x3y4[i][1], lambdas[i], s=50, color='blue', alpha=0.5)
+            else:
+                ax.scatter(x3y4[i][0], x3y4[i][1], lambdas[i], s=50, color='red', facecolors='none')
 
 
 def plot_X_eq():
@@ -812,15 +888,19 @@ def plot_flow_final():
 # plot_flow_final()
 
 
+
+# plt.rcParams['figure.figsize'] = [10, 10]
+# plt.rcParams['figure.dpi'] = 600
+
 # plot_equilibria()
 
 # plot_eigenvalues(eigenvalsx2y2)
 
-plot_eq_3D()
+# plot_eq_3D()
 
 # plot_X_eq()
 # plot_Y_eq()
 
-# flow_rate_plot()
+flow_rate_plot()
 
 # flow_rate_plot2()
